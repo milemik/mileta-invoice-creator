@@ -41,7 +41,8 @@ func main() {
 	facNum := "1/2024" // This should be from user input
 	headerSetup(pdf, facNum)
 	drawLine(pdf, 10, 30, 200, 30)
-	baseComp := From{
+	// Should be read from DB/JSON?
+	baseComp := Company{
 		Id:              "BASE",
 		OwnerName:       "FirstName LastName",
 		CompanyName:     "Base Company",
@@ -56,7 +57,8 @@ func main() {
 		},
 		PIB: "12324234234",
 	}
-	toComp := From{
+	// Should be read from DB/JSON?
+	toComp := Company{
 		Id:              "ToComp",
 		OwnerName:       "FirstNameTo LastNameTo",
 		CompanyName:     "To Company",
@@ -99,7 +101,7 @@ func headerSetup(pdf *fpdf.Fpdf, facNum string) {
 	pdf.Cell(1, 30, "Trading place / Mesto prometa: Mountain View")
 }
 
-func fromToInfo(pdf *fpdf.Fpdf, baseComp, to From) {
+func fromToInfo(pdf *fpdf.Fpdf, baseComp, to Company) {
 	// FROM
 	pdf.MoveTo(10, -10)
 	pdf.Cell(100, 100, "From / Od:")

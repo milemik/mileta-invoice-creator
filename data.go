@@ -1,7 +1,7 @@
 package main
 
 // Company Information
-type From struct {
+type Company struct {
 	Id              string      `json:"id"`
 	OwnerName       string      `json:"ownerName"`
 	CompanyName     string      `json:"companyName"`

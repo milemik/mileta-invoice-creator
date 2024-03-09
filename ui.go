@@ -32,7 +32,7 @@ func CreateUI() {
 
 	exportButton := widget.NewButton("Export", func() {
 		// Here we should save this information for later usage
-		saveToJson(From{
+		saveToJson(Company{
 			Id:              idInput.Text,
 			OwnerName:       ownerNameInput.Text,
 			CompanyName:     companyNameInput.Text,
@@ -82,7 +82,7 @@ func CreateUI() {
 
 }
 
-func saveToJson(from From) {
+func saveToJson(from Company) {
 	jsonData, err := json.MarshalIndent(from, "", " ")
 	if err != nil {
 		fmt.Println(err)
