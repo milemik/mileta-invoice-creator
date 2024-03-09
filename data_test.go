@@ -103,3 +103,31 @@ func TestTargetIdsList(t *testing.T) {
 		t.Errorf("Expect first id in List to be 1 and we got %s", result[0])
 	}
 }
+
+func TestGetTargetCompByIdInit(t *testing.T) {
+	comp := AllCompanies{}
+
+	_, err := comp.GetTargetCompById("1")
+
+	if err == nil {
+		t.Error("Expect to see error")
+	}
+}
+
+func TestGetTargetCompById(t *testing.T) {
+	comp := AllCompanies{All: []Company{
+		{Id: "1"},
+		{Id: "11"},
+		{Id: "2"},
+	}}
+
+	res, err := comp.GetTargetCompById("1")
+
+	if err != nil {
+		t.Error("Error raised and we expect not to see error")
+	}
+
+	if res.Id != "1" {
+		t.Errorf("We expect that company in result has id of 1 and we got %s", res.Id)
+	}
+}
