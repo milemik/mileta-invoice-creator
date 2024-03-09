@@ -34,6 +34,7 @@ func main() {
 		os.Exit(1)
 	}
 	if args[1] == "setup" {
+		CreateUI()
 		// Add logic to create config.json file - or maybe write data to some DB
 		fmt.Println("Starting setup")
 		return
@@ -69,7 +70,6 @@ func main() {
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Println("Hello there")
 }
 
 func drawLine(pdf *fpdf.Fpdf, x1, y1, x2, y2 float64) {
