@@ -1,5 +1,9 @@
 package main
 
+type AllCompanies struct {
+	All []Company `json:"all"`
+}
+
 // Company Information
 type Company struct {
 	Id              string      `json:"id"`
@@ -18,4 +22,9 @@ type Company struct {
 type BankAccount struct {
 	SWIFT string `json:"swift"`
 	IBAN  string `json:"iban"`
+}
+
+func (all *AllCompanies) AddCompany(new Company) []Company {
+	all.All = append(all.All, new)
+	return all.All
 }

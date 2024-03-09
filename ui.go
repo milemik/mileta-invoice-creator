@@ -85,16 +85,27 @@ func CreateUI() {
 }
 
 func saveToJson(from Company) {
-	jsonData, err := json.MarshalIndent(from, "", " ")
+	mainFile := "all.json"
+	var allCopmanies AllCompanies
+	data, err := os.ReadFile(mainFile)
+
+	err = json.Unmarshal(data, &allCopmanies)
+	if err != nil {
+		fmt.Println("Could not unmarshal data", err)
+		os.Exit(1)
+	}
+
+	_ = allCopmanies.AddCompany(from)
+
+	jsonData, err := json.MarshalIndent(allCopmanies, "", " ")
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-	filename := from.CompanyName + ".json"
-	err = os.WriteFile(filename, jsonData, 0644)
+	err = os.WriteFile(mainFile, jsonData, 0644)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-	fmt.Println("File saved in: " + filename)
+	fmt.Println("File saved in: " + mainFile)
 }
