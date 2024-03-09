@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 
+	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/layout"
@@ -16,6 +17,7 @@ func CreateUI() {
 
 	myApp := app.New()
 	myWindow := myApp.NewWindow("Invoice generator")
+	myWindow.Resize(fyne.NewSize(700, 1000))
 
 	idInput := widget.NewEntry()
 	ownerNameInput := widget.NewEntry()
