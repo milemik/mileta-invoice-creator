@@ -131,3 +131,31 @@ func TestGetTargetCompById(t *testing.T) {
 		t.Errorf("We expect that company in result has id of 1 and we got %s", res.Id)
 	}
 }
+
+func TestGetBaseCompByIdInit(t *testing.T) {
+	comp := AllCompanies{}
+
+	_, err := comp.GetBaseCompById("1")
+
+	if err == nil {
+		t.Error("Expect to see error")
+	}
+}
+
+func TestGetBaseCompById(t *testing.T) {
+	comp := AllCompanies{Base: []Company{
+		{Id: "1"},
+		{Id: "11"},
+		{Id: "2"},
+	}}
+
+	res, err := comp.GetBaseCompById("1")
+
+	if err != nil {
+		t.Error("Error raised and we expect not to see error")
+	}
+
+	if res.Id != "1" {
+		t.Errorf("We expect that company in result has id of 1 and we got %s", res.Id)
+	}
+}
