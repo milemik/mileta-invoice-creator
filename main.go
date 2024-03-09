@@ -26,6 +26,8 @@ func main() {
 		// Maybe some popup saying error reading data!?
 	}
 	invoiceIdInput := widget.NewEntry()
+	pricePerHourInput := widget.NewEntry()
+	workedHoursInput := widget.NewEntry()
 
 	baseCompSelect := widget.NewSelect(companies.BaseIdsList(), func(s string) {
 		log.Println("BASE SELECTED: " + s)
@@ -59,7 +61,7 @@ func main() {
 		if len(fileName) < 1 {
 			fileName = "test.pdf"
 		}
-		createPDF(fileName, baseComp, targetComp)
+		createPDF(fileName, baseComp, targetComp, pricePerHourInput.Text, workedHoursInput.Text)
 	})
 
 	content := container.NewVBox(
@@ -68,6 +70,10 @@ func main() {
 		targetCompSelect,
 		widget.NewLabel("INVOICE ID"),
 		invoiceIdInput,
+		widget.NewLabel("PRICE PER HOUR"),
+		pricePerHourInput,
+		widget.NewLabel("HOURS WORKED"),
+		workedHoursInput,
 		exportBtn,
 	)
 
@@ -76,9 +82,21 @@ func main() {
 	os.Exit(1)
 }
 
-func createPDF(filename string, baseComp, toComp Company) {
+func createPDF(filename string, baseComp, toComp Company, pricePerHour, hoursWorked string) {
 	// PDF CREATE
 	pdf := fpdf.New("P", "mm", "A4", "")
+
+	pricePerHourInt, err := strconv.Atoi(pricePerHour)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	hoursWorkedInt, err := strconv.Atoi(hoursWorked)
+	if err != nil {
+		log.Println(err)
+		return
+	}
 
 	pdf.AddPage()
 	pdf.SetFont("Arial", "", 12)
@@ -89,13 +107,14 @@ func createPDF(filename string, baseComp, toComp Company) {
 
 	fromToInfo(pdf, baseComp, toComp)
 	drawLine(pdf, 10, 120, 200, 120)
-	createTable(pdf)
+	
+	createTable(pdf, pricePerHourInt, hoursWorkedInt)
 
 	singDoc(pdf)
 	footer(pdf)
 
 	// Output to pdf
-	err := pdf.OutputFileAndClose(filename)
+	err = pdf.OutputFileAndClose(filename + ".pdf")
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -163,7 +182,7 @@ func fromToInfo(pdf *fpdf.Fpdf, baseComp, to Company) {
 	pdf.Cell(100, 110, "IBAN: "+baseComp.Bank.IBAN)
 }
 
-func createTable(pdf *fpdf.Fpdf) {
+func createTable(pdf *fpdf.Fpdf, pricePerHour, hoursWorked int) {
 	// Invoice Info
 	pdf.MoveTo(10, 70)
 	// Table Header
@@ -181,9 +200,7 @@ func createTable(pdf *fpdf.Fpdf) {
 	pdf.Cell(cellWidth, 110, "(USD) (TOTAL)")
 	// Table content
 	pdf.MoveTo(10, 80)
-	// Calculate amount
-	pricePerHour := 10
-	hoursWorked := 50
+	// Callculate amount
 	summary := pricePerHour * hoursWorked
 
 	pdf.Cell(cellWidth, 120, "Programerske")
