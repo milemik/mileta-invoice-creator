@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"os"
 
 	"fyne.io/fyne/v2"
@@ -48,7 +49,8 @@ func CreateUI() {
 			},
 			PIB: companyPibInput.Text,
 		})
-		fmt.Println(ownerNameInput.Text, companyNameInput.Text)
+		log.Println("Added: ", idInput.Text)
+		showPopUp(myApp, "ADDED: "+companyFullNameInput.Text)
 	})
 
 	content := container.NewVBox(
@@ -82,6 +84,14 @@ func CreateUI() {
 	myWindow.SetContent(content)
 	myWindow.ShowAndRun()
 
+}
+
+func showPopUp(app fyne.App, content string) {
+	// Very simple PopUp shown when we successfully add new company!
+	addPopUpWindow := app.NewWindow("Company Added")
+	addPopUpWindow.Resize(fyne.NewSize(100, 100))
+	addPopUpWindow.SetContent(container.NewVBox(widget.NewLabel(content)))
+	addPopUpWindow.Show()
 }
 
 func saveToJson(from Company) {
