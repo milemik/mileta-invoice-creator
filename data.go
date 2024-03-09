@@ -1,7 +1,8 @@
 package main
 
 type AllCompanies struct {
-	All []Company `json:"all"`
+	Base []Company `json:"base"`
+	All  []Company `json:"all"`
 }
 
 // Company Information
@@ -16,6 +17,7 @@ type Company struct {
 	CompanyEmail    string      `json:"companyEmail"`
 	Bank            BankAccount `json:"bank"`
 	PIB             string      `json:"pib"`
+	IsBaseCompany   bool        `json:"isBaseCompany"`
 }
 
 // Bank account
@@ -25,6 +27,11 @@ type BankAccount struct {
 }
 
 func (all *AllCompanies) AddCompany(new Company) []Company {
-	all.All = append(all.All, new)
-	return all.All
+	if new.IsBaseCompany {
+		all.Base = append(all.Base, new)
+		return all.Base
+	} else {
+		all.All = append(all.All, new)
+		return all.All
+	}
 }

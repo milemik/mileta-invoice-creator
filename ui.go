@@ -29,6 +29,9 @@ func CreateUI() {
 	companyStateInput := widget.NewEntry()
 	companyEmailInput := widget.NewEntry()
 	companyPibInput := widget.NewEntry()
+	isBaseCompanyInput := widget.NewCheck("IS BASE COMPANY", func(b bool) {
+		log.Println("isBaseSetTo: ", b)
+	})
 
 	bankSwiftNoInput := widget.NewEntry()
 	bankIbanNoInput := widget.NewEntry()
@@ -47,7 +50,8 @@ func CreateUI() {
 				SWIFT: bankSwiftNoInput.Text,
 				IBAN:  bankIbanNoInput.Text,
 			},
-			PIB: companyPibInput.Text,
+			PIB:           companyPibInput.Text,
+			IsBaseCompany: isBaseCompanyInput.Checked,
 		})
 		log.Println("Added: ", idInput.Text)
 		showPopUp(myApp, "ADDED: "+companyFullNameInput.Text)
@@ -76,6 +80,7 @@ func CreateUI() {
 		bankSwiftNoInput,
 		widget.NewLabel("BANK IBAN NUMBER"),
 		bankIbanNoInput,
+		isBaseCompanyInput,
 
 		layout.NewSpacer(),
 		exportButton,
