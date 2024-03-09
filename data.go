@@ -68,7 +68,7 @@ func (all *AllCompanies) TargetIdsList() []string {
 	}
 	return ids
 }
-
+// GetDataFromDB get data from database if file don't exist it will create new one
 func GetDataFromDB() (AllCompanies, string, error) {
 	dbFile := "all.json"
 	var allCopmanies AllCompanies

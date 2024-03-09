@@ -19,6 +19,7 @@ func main() {
 	baseWindow := myApp.NewWindow("Invoice Creator")
 	baseWindow.Resize(fyne.NewSize(700, 1000))
 
+	// TODO: Use binding to refresh list after adding new company!?
 	companies, _, err := GetDataFromDB()
 	if err != nil {
 		log.Println(err)
