@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"os"
 
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
@@ -29,6 +31,19 @@ func CreateUI() {
 
 	exportButton := widget.NewButton("Export", func() {
 		// Here we should save this information for later usage
+		saveToJson(From{
+			OwnerName:       ownerNameInput.Text,
+			CompanyName:     companyNameInput.Text,
+			CompanyFullName: companyFullNameInput.Text,
+			CompanyAddress:  companyAddressInput.Text,
+			CompanyState:    companyStateInput.Text,
+			CompanyEmail:    companyEmailInput.Text,
+			Bank: BankAccount{
+				SWIFT: bankSwiftNoInput.Text,
+				IBAN:  bankIbanNoInput.Text,
+			},
+			PIB: companyPibInput.Text,
+		})
 		fmt.Println(ownerNameInput.Text, companyNameInput.Text)
 	})
 
@@ -60,5 +75,21 @@ func CreateUI() {
 
 	myWindow.SetContent(content)
 	myWindow.ShowAndRun()
+
+}
+
+func saveToJson(from From) {
+	jsonData, err := json.MarshalIndent(from, "", " ")
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	filename := from.CompanyName + ".json"
+	err = os.WriteFile(filename, jsonData, 0644)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	fmt.Println("File saved in: " + filename)
 
 }
