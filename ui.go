@@ -14,7 +14,7 @@ func CreateUI(myApp fyne.App) {
 	fmt.Println("Opening UI")
 
 	myWindow := myApp.NewWindow("Invoice generator")
-	myWindow.Resize(fyne.NewSize(700, 1000))
+	myWindow.Resize(fyne.NewSize(700, 700))
 
 	idInput := widget.NewEntry()
 	ownerNameInput := widget.NewEntry()

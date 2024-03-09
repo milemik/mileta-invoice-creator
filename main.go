@@ -63,11 +63,11 @@ func main() {
 
 	content := container.NewVBox(
 		setupBtn,
-		exportBtn,
 		baseCompSelect,
 		targetCompSelect,
 		widget.NewLabel("INVOICE ID"),
 		invoiceIdInput,
+		exportBtn,
 	)
 
 	baseWindow.SetContent(content)

@@ -11,5 +11,5 @@ UI is created using really nice tool [fyne.io](https://fyne.io/).
 
 Run app using
 ```shell
-go run *.go <setup|create>
+go run .
 ```
