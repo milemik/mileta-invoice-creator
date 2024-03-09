@@ -21,5 +21,7 @@
 go.work
 
 .idea
-
+# To awoid sharing data
 all.json
+# Testing PDF creation
+test.pdf

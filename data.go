@@ -93,20 +93,20 @@ func SaveToDB(from Company) {
 	log.Println("File saved in: " + mainFile)
 }
 
-func GetTargetCompById(all AllCompanies, id string) (Company, error) {
+func (all *AllCompanies) GetTargetCompById(id string) (Company, error) {
 	for _, company := range all.All {
 		if company.Id == id {
 			return company, nil
 		}
 	}
-	return Company{}, errors.New("Could not found company with ID: " + id)
+	return Company{}, errors.New("TARGET: Could not found company with ID: " + id)
 }
 
-func GetBaseCompById(all AllCompanies, id string) (Company, error) {
+func (all *AllCompanies) GetBaseCompById(id string) (Company, error) {
 	for _, company := range all.Base {
 		if company.Id == id {
 			return company, nil
 		}
 	}
-	return Company{}, errors.New("Could not found company with ID: " + id)
+	return Company{}, errors.New("BASE: Could not found company with ID: " + id)
 }

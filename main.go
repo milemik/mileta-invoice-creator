@@ -24,6 +24,7 @@ func main() {
 		log.Println(err)
 		// Maybe some popup saying error reading data!?
 	}
+	invoiceIdInput := widget.NewEntry()
 
 	baseCompSelect := widget.NewSelect(companies.BaseIdsList(), func(s string) {
 		log.Println("BASE SELECTED: " + s)
@@ -40,20 +41,23 @@ func main() {
 	exportBtn := widget.NewButton("Create", func() {
 		log.Println(baseCompSelect.Selected, targetCompSelect.Selected)
 
-		baseComp, err := GetBaseCompById(companies, targetCompSelect.Selected)
+		baseComp, err := companies.GetBaseCompById(baseCompSelect.Selected)
 		if err != nil {
 			// We can show popup for error
 			log.Println(err)
 			return
 		}
-		targetComp, err := GetTargetCompById(companies, targetCompSelect.Selected)
+		targetComp, err := companies.GetTargetCompById(targetCompSelect.Selected)
 		if err != nil {
 			// We can show popup for error
 			log.Println(err)
 			return
 		}
 
-		fileName := "example.pdf"
+		fileName := invoiceIdInput.Text
+		if len(fileName) < 1 {
+			fileName = "test.pdf"
+		}
 		createPDF(fileName, baseComp, targetComp)
 	})
 
@@ -62,6 +66,8 @@ func main() {
 		exportBtn,
 		baseCompSelect,
 		targetCompSelect,
+		widget.NewLabel("INVOICE ID"),
+		invoiceIdInput,
 	)
 
 	baseWindow.SetContent(content)
