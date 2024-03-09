@@ -38,10 +38,37 @@ func main() {
 
 	pdf.AddPage()
 	pdf.SetFont("Arial", "", 12)
-	facNum := "1/2024"
+	facNum := "1/2024" // This should be from user input
 	headerSetup(pdf, facNum)
 	drawLine(pdf, 10, 30, 200, 30)
-	fromToInfo(pdf)
+	baseComp := From{
+		Id:              "BASE",
+		OwnerName:       "FirstName LastName",
+		CompanyName:     "Base Company",
+		CompanyFullName: "Base Company LTD.",
+		CompanyAddress:  "Samle Address 123",
+		CompanyCity:     "City",
+		CompanyState:    "State",
+		CompanyEmail:    "email@base.com",
+		Bank: BankAccount{
+			SWIFT: "DS122434345435345345",
+			IBAN:  "DWADWADADEDFE",
+		},
+		PIB: "12324234234",
+	}
+	toComp := From{
+		Id:              "ToComp",
+		OwnerName:       "FirstNameTo LastNameTo",
+		CompanyName:     "To Company",
+		CompanyFullName: "To Company LTD.",
+		CompanyAddress:  "To Address 123",
+		CompanyCity:     "ToCity",
+		CompanyState:    "ToState",
+		CompanyEmail:    "email@to.com",
+		PIB:             "45455556565",
+	}
+
+	fromToInfo(pdf, baseComp, toComp)
 	drawLine(pdf, 10, 120, 200, 120)
 	createTable(pdf)
 
@@ -72,7 +99,7 @@ func headerSetup(pdf *fpdf.Fpdf, facNum string) {
 	pdf.Cell(1, 30, "Trading place / Mesto prometa: Mountain View")
 }
 
-func fromToInfo(pdf *fpdf.Fpdf) {
+func fromToInfo(pdf *fpdf.Fpdf, baseComp, to From) {
 	// FROM
 	pdf.MoveTo(10, -10)
 	pdf.Cell(100, 100, "From / Od:")
@@ -80,41 +107,41 @@ func fromToInfo(pdf *fpdf.Fpdf) {
 
 	// Company name
 	pdf.MoveTo(10, -10)
-	pdf.Cell(100, 110, "From copany name")
-	pdf.Cell(50, 110, "To company name")
+	pdf.Cell(100, 110, baseComp.CompanyFullName)
+	pdf.Cell(50, 110, to.CompanyFullName)
 
 	// Company Adress
 	pdf.MoveTo(10, 0)
-	pdf.Cell(100, 110, "Address / Adresa: Blabla Street from 55")
-	pdf.Cell(50, 110, "Address / Adresa: Blabla Street 55")
+	pdf.Cell(100, 110, "Address / Adresa: "+baseComp.CompanyAddress)
+	pdf.Cell(50, 110, "Address / Adresa: "+to.CompanyAddress)
 
 	// Company Adress
 	pdf.MoveTo(10, 10)
-	pdf.Cell(100, 110, "City / Grad: <GradFrom>")
-	pdf.Cell(50, 110, "City / Grad: <GradTo>")
+	pdf.Cell(100, 110, "City / Grad: "+baseComp.CompanyCity)
+	pdf.Cell(50, 110, "City / Grad: "+to.CompanyCity)
 
 	// Company Adress
 	pdf.MoveTo(10, 20)
-	pdf.Cell(100, 110, "Country / Država: <DrzavaFrom>")
-	pdf.Cell(50, 110, "Country / Država: <DrzavaTo>")
+	pdf.Cell(100, 110, "Country / Država: "+baseComp.CompanyState)
+	pdf.Cell(50, 110, "Country / Država: "+to.CompanyState)
 
 	// VAT NO
 	pdf.MoveTo(10, 30)
-	pdf.Cell(100, 110, "Vat No/ PIB: 123456789")
-	pdf.Cell(50, 110, "Vat No / Poreski broj: 12345678TT")
+	pdf.Cell(100, 110, "Vat No/ PIB: "+baseComp.PIB)
+	pdf.Cell(50, 110, "Vat No / Poreski broj: "+to.PIB)
 
 	// EMAIL
 	pdf.MoveTo(10, 40)
-	pdf.Cell(100, 110, "E-mail: <company123@company.com")
-	pdf.Cell(100, 110, "E-mail: <company123To@company.com")
+	pdf.Cell(100, 110, "E-mail: "+baseComp.CompanyEmail)
+	pdf.Cell(100, 110, "E-mail: "+to.CompanyEmail)
 
 	// SWIFT
 	pdf.MoveTo(10, 50)
-	pdf.Cell(100, 110, "SWIFT: SWIFTHERE")
+	pdf.Cell(100, 110, "SWIFT: "+baseComp.Bank.SWIFT)
 
 	// BANK NUMBER
 	pdf.MoveTo(10, 60)
-	pdf.Cell(100, 110, "IBAN:  BANKNUM123456789")
+	pdf.Cell(100, 110, "IBAN: "+baseComp.Bank.IBAN)
 }
 
 func createTable(pdf *fpdf.Fpdf) {

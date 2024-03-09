@@ -95,5 +95,4 @@ func saveToJson(from From) {
 		os.Exit(1)
 	}
 	fmt.Println("File saved in: " + filename)
-
 }
