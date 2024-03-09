@@ -35,19 +35,11 @@ type BankAccount struct {
 }
 
 func (all *AllCompanies) AddCompany(new Company) []Company {
-	comp, err := all.GetBaseCompById(new.Id)
-	if err != nil {
-		log.Println(err)
-		return all.Base
-	}
+	comp, _ := all.GetBaseCompById(new.Id)
 
-	comp, err = all.GetTargetCompById(new.Id)
-	if err != nil {
-		log.Println(err)
-		return all.All
-	}
+	comp, _ = all.GetTargetCompById(new.Id)
 
-	if len(comp.Id) < 1 {
+	if len(comp.Id) > 0 {
 		log.Println("Company already exists in DB")
 		return all.All
 	}
