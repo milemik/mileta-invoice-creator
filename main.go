@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"strconv"
 	"time"
@@ -18,46 +19,49 @@ func main() {
 	baseWindow := myApp.NewWindow("Invoice Creator")
 	baseWindow.Resize(fyne.NewSize(700, 1000))
 
+	companies, _, err := GetDataFromDB()
+	if err != nil {
+		log.Println(err)
+		// Maybe some popup saying error reading data!?
+	}
+
+	baseCompSelect := widget.NewSelect(companies.BaseIdsList(), func(s string) {
+		log.Println("BASE SELECTED: " + s)
+	})
+
+	targetCompSelect := widget.NewSelect(companies.TargetIdsList(), func(s string) {
+		log.Println("TARGET SELECTED: " + s)
+	})
+
 	setupBtn := widget.NewButton("Setup", func() {
 		CreateUI(myApp)
 	})
 
 	exportBtn := widget.NewButton("Create", func() {
+		log.Println(baseCompSelect.Selected, targetCompSelect.Selected)
+
+		baseComp, err := GetBaseCompById(companies, targetCompSelect.Selected)
+		if err != nil {
+			// We can show popup for error
+			log.Println(err)
+			return
+		}
+		targetComp, err := GetTargetCompById(companies, targetCompSelect.Selected)
+		if err != nil {
+			// We can show popup for error
+			log.Println(err)
+			return
+		}
 
 		fileName := "example.pdf"
-		baseComp := Company{
-			Id:              "BASE UI Test",
-			OwnerName:       "FirstName LastName",
-			CompanyName:     "Base Company",
-			CompanyFullName: "UI Base Company LTD.",
-			CompanyAddress:  "Samle Address 123",
-			CompanyCity:     "City",
-			CompanyState:    "State",
-			CompanyEmail:    "email@base.com",
-			Bank: BankAccount{
-				SWIFT: "DS122434345435345345",
-				IBAN:  "DWADWADADEDFE",
-			},
-			PIB: "12324234234",
-		}
-		// Should be read from DB/JSON?
-		toComp := Company{
-			Id:              "ToComp",
-			OwnerName:       "FirstNameTo LastNameTo",
-			CompanyName:     "To Company",
-			CompanyFullName: "To Company LTD.",
-			CompanyAddress:  "To Address 123",
-			CompanyCity:     "ToCity",
-			CompanyState:    "ToState",
-			CompanyEmail:    "email@to.com",
-			PIB:             "45455556565",
-		}
-		createPDF(fileName, baseComp, toComp)
+		createPDF(fileName, baseComp, targetComp)
 	})
 
 	content := container.NewVBox(
 		setupBtn,
 		exportBtn,
+		baseCompSelect,
+		targetCompSelect,
 	)
 
 	baseWindow.SetContent(content)
