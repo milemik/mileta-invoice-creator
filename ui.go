@@ -17,6 +17,7 @@ func CreateUI() {
 	myApp := app.New()
 	myWindow := myApp.NewWindow("Invoice generator")
 
+	idInput := widget.NewEntry()
 	ownerNameInput := widget.NewEntry()
 	companyNameInput := widget.NewEntry()
 	companyFullNameInput := widget.NewEntry()
@@ -32,6 +33,7 @@ func CreateUI() {
 	exportButton := widget.NewButton("Export", func() {
 		// Here we should save this information for later usage
 		saveToJson(From{
+			Id:              idInput.Text,
 			OwnerName:       ownerNameInput.Text,
 			CompanyName:     companyNameInput.Text,
 			CompanyFullName: companyFullNameInput.Text,
@@ -48,6 +50,8 @@ func CreateUI() {
 	})
 
 	content := container.NewVBox(
+		widget.NewLabel("CREATE ID - UNIQUE NAME FOR COMPANY"),
+		idInput,
 		widget.NewLabel("OWNER NAME"),
 		ownerNameInput,
 		widget.NewLabel("COMPANY NAME"),

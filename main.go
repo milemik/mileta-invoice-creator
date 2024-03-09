@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/go-pdf/fpdf"
 )
-
 
 func main() {
 	args := os.Args
@@ -38,7 +38,8 @@ func main() {
 
 	pdf.AddPage()
 	pdf.SetFont("Arial", "", 12)
-	headerSetup(pdf)
+	facNum := "1/2024"
+	headerSetup(pdf, facNum)
 	drawLine(pdf, 10, 30, 200, 30)
 	fromToInfo(pdf)
 	drawLine(pdf, 10, 120, 200, 120)
@@ -62,11 +63,12 @@ func drawLine(pdf *fpdf.Fpdf, x1, y1, x2, y2 float64) {
 	pdf.Line(x1, y1, x2, y2)
 }
 
-func headerSetup(pdf *fpdf.Fpdf) {
+func headerSetup(pdf *fpdf.Fpdf, facNum string) {
 	// Header
-	pdf.Cell(100, 10, "Invoice / Faktura: <BROJ FAKTURE>")
-	pdf.Cell(-1, 10, "Dated / Datum fakture: <DATUM>")
-	pdf.Cell(1, 20, "Value date / Datum prometa: <DATUM>")
+	now := time.Now().Format("01/02/2006")
+	pdf.Cell(100, 10, "Invoice / Faktura: "+facNum)
+	pdf.Cell(-1, 10, "Dated / Datum fakture: "+now)
+	pdf.Cell(1, 20, "Value date / Datum prometa: "+now)
 	pdf.Cell(1, 30, "Trading place / Mesto prometa: Mountain View")
 }
 
