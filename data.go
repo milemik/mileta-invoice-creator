@@ -73,6 +73,13 @@ func GetDataFromDB() (AllCompanies, string, error) {
 	dbFile := "all.json"
 	var allCopmanies AllCompanies
 	data, err := os.ReadFile(dbFile)
+	if err != nil {
+		log.Println(err)
+		if err.Error() == "open alltest.json: no such file or directory" {
+			initalDBSetup(dbFile, allCopmanies)
+		}
+		return allCopmanies, dbFile, err
+	}
 
 	err = json.Unmarshal(data, &allCopmanies)
 	if err != nil {
@@ -80,6 +87,26 @@ func GetDataFromDB() (AllCompanies, string, error) {
 		return allCopmanies, dbFile, err
 	}
 	return allCopmanies, dbFile, nil
+}
+
+func initalDBSetup(dbFile string, allCopmanies AllCompanies) {
+	_, err := os.Create(dbFile)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	writeToDb(allCopmanies, dbFile)
+}
+
+func writeToDb(allCopmanies AllCompanies, dbFile string) {
+	jsonData, err := json.MarshalIndent(allCopmanies, "", " ")
+	if err != nil {
+		log.Println(err)
+	}
+	err = os.WriteFile(dbFile, jsonData, 0644)
+	if err != nil {
+		log.Println(err)
+	}
 }
 
 func SaveToDB(from Company) {
@@ -91,14 +118,7 @@ func SaveToDB(from Company) {
 
 	_ = allCopmanies.AddCompany(from)
 
-	jsonData, err := json.MarshalIndent(allCopmanies, "", " ")
-	if err != nil {
-		log.Println(err)
-	}
-	err = os.WriteFile(mainFile, jsonData, 0644)
-	if err != nil {
-		log.Println(err)
-	}
+	writeToDb(allCopmanies, mainFile)
 	log.Println("File saved in: " + mainFile)
 }
 
