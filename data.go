@@ -1,5 +1,12 @@
 package main
 
+import (
+	"encoding/json"
+	"fmt"
+	"log"
+	"os"
+)
+
 type AllCompanies struct {
 	Base []Company `json:"base"`
 	All  []Company `json:"all"`
@@ -34,4 +41,34 @@ func (all *AllCompanies) AddCompany(new Company) []Company {
 		all.All = append(all.All, new)
 		return all.All
 	}
+}
+
+func GetDataFromDB() (AllCompanies, string) {
+	dbFile := "all.json"
+	var allCopmanies AllCompanies
+	data, err := os.ReadFile(dbFile)
+
+	err = json.Unmarshal(data, &allCopmanies)
+	if err != nil {
+		fmt.Println("Could not unmarshal data", err)
+		os.Exit(1)
+	}
+	return allCopmanies, dbFile
+}
+
+func SaveToDB(from Company) {
+	allCopmanies, mainFile := GetDataFromDB()
+
+	_ = allCopmanies.AddCompany(from)
+
+	jsonData, err := json.MarshalIndent(allCopmanies, "", " ")
+	if err != nil {
+		log.Println(err)
+		os.Exit(1)
+	}
+	err = os.WriteFile(mainFile, jsonData, 0644)
+	if err != nil {
+		log.Println(err)
+	}
+	log.Println("File saved in: " + mainFile)
 }

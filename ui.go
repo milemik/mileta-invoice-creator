@@ -1,22 +1,18 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
-	"os"
 
 	"fyne.io/fyne/v2"
-	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
 )
 
-func CreateUI() {
+func CreateUI(myApp fyne.App) {
 	fmt.Println("Opening UI")
 
-	myApp := app.New()
 	myWindow := myApp.NewWindow("Invoice generator")
 	myWindow.Resize(fyne.NewSize(700, 1000))
 
@@ -38,7 +34,7 @@ func CreateUI() {
 
 	exportButton := widget.NewButton("Export", func() {
 		// Here we should save this information for later usage
-		saveToJson(Company{
+		SaveToDB(Company{
 			Id:              idInput.Text,
 			OwnerName:       ownerNameInput.Text,
 			CompanyName:     companyNameInput.Text,
@@ -87,7 +83,7 @@ func CreateUI() {
 	)
 
 	myWindow.SetContent(content)
-	myWindow.ShowAndRun()
+	myWindow.Show()
 
 }
 
@@ -97,30 +93,4 @@ func showPopUp(app fyne.App, content string) {
 	addPopUpWindow.Resize(fyne.NewSize(100, 100))
 	addPopUpWindow.SetContent(container.NewVBox(widget.NewLabel(content)))
 	addPopUpWindow.Show()
-}
-
-func saveToJson(from Company) {
-	mainFile := "all.json"
-	var allCopmanies AllCompanies
-	data, err := os.ReadFile(mainFile)
-
-	err = json.Unmarshal(data, &allCopmanies)
-	if err != nil {
-		fmt.Println("Could not unmarshal data", err)
-		os.Exit(1)
-	}
-
-	_ = allCopmanies.AddCompany(from)
-
-	jsonData, err := json.MarshalIndent(allCopmanies, "", " ")
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-	err = os.WriteFile(mainFile, jsonData, 0644)
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-	fmt.Println("File saved in: " + mainFile)
 }

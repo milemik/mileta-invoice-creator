@@ -6,34 +6,67 @@ import (
 	"strconv"
 	"time"
 
+	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/app"
+	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/widget"
 	"github.com/go-pdf/fpdf"
 )
 
 func main() {
-	args := os.Args
-	if len(args) < 2 {
-		fmt.Println("Please provide needed arguments\n\tcreate: create pdf\n\tsetup: configure program")
-		os.Exit(1)
-	}
-	if args[1] == "setup" {
-		CreateUI()
-		// Add logic to create config.json file - or maybe write data to some DB
-		fmt.Println("Starting setup")
-		return
-	}
-	if args[1] != "create" {
-		fmt.Println("Exiting")
-		return
-	}
+	myApp := app.New()
+	baseWindow := myApp.NewWindow("Invoice Creator")
+	baseWindow.Resize(fyne.NewSize(700, 1000))
 
-	if len(args) < 3 {
-		fmt.Println("Please provice invoice name!")
-		return
-	}
+	setupBtn := widget.NewButton("Setup", func() {
+		CreateUI(myApp)
+	})
 
-	fileName := args[2] + ".pdf"
-	fmt.Println(args)
+	exportBtn := widget.NewButton("Create", func() {
 
+		fileName := "example.pdf"
+		baseComp := Company{
+			Id:              "BASE UI Test",
+			OwnerName:       "FirstName LastName",
+			CompanyName:     "Base Company",
+			CompanyFullName: "UI Base Company LTD.",
+			CompanyAddress:  "Samle Address 123",
+			CompanyCity:     "City",
+			CompanyState:    "State",
+			CompanyEmail:    "email@base.com",
+			Bank: BankAccount{
+				SWIFT: "DS122434345435345345",
+				IBAN:  "DWADWADADEDFE",
+			},
+			PIB: "12324234234",
+		}
+		// Should be read from DB/JSON?
+		toComp := Company{
+			Id:              "ToComp",
+			OwnerName:       "FirstNameTo LastNameTo",
+			CompanyName:     "To Company",
+			CompanyFullName: "To Company LTD.",
+			CompanyAddress:  "To Address 123",
+			CompanyCity:     "ToCity",
+			CompanyState:    "ToState",
+			CompanyEmail:    "email@to.com",
+			PIB:             "45455556565",
+		}
+		createPDF(fileName, baseComp, toComp)
+	})
+
+	content := container.NewVBox(
+		setupBtn,
+		exportBtn,
+	)
+
+	baseWindow.SetContent(content)
+	baseWindow.ShowAndRun()
+	os.Exit(1)
+}
+
+func createPDF(filename string, baseComp, toComp Company) {
+	// PDF CREATE
 	pdf := fpdf.New("P", "mm", "A4", "")
 
 	pdf.AddPage()
@@ -42,33 +75,6 @@ func main() {
 	headerSetup(pdf, facNum)
 	drawLine(pdf, 10, 30, 200, 30)
 	// Should be read from DB/JSON?
-	baseComp := Company{
-		Id:              "BASE",
-		OwnerName:       "FirstName LastName",
-		CompanyName:     "Base Company",
-		CompanyFullName: "Base Company LTD.",
-		CompanyAddress:  "Samle Address 123",
-		CompanyCity:     "City",
-		CompanyState:    "State",
-		CompanyEmail:    "email@base.com",
-		Bank: BankAccount{
-			SWIFT: "DS122434345435345345",
-			IBAN:  "DWADWADADEDFE",
-		},
-		PIB: "12324234234",
-	}
-	// Should be read from DB/JSON?
-	toComp := Company{
-		Id:              "ToComp",
-		OwnerName:       "FirstNameTo LastNameTo",
-		CompanyName:     "To Company",
-		CompanyFullName: "To Company LTD.",
-		CompanyAddress:  "To Address 123",
-		CompanyCity:     "ToCity",
-		CompanyState:    "ToState",
-		CompanyEmail:    "email@to.com",
-		PIB:             "45455556565",
-	}
 
 	fromToInfo(pdf, baseComp, toComp)
 	drawLine(pdf, 10, 120, 200, 120)
@@ -78,7 +84,7 @@ func main() {
 	footer(pdf)
 
 	// Output to pdf
-	err := pdf.OutputFileAndClose(fileName)
+	err := pdf.OutputFileAndClose(filename)
 	if err != nil {
 		fmt.Println(err)
 	}
