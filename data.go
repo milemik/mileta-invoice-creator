@@ -75,7 +75,7 @@ func GetDataFromDB() (AllCompanies, string, error) {
 	data, err := os.ReadFile(dbFile)
 	if err != nil {
 		log.Println(err)
-		if err.Error() == "open alltest.json: no such file or directory" {
+		if err.Error() == "open all.json: no such file or directory" {
 			initalDBSetup(dbFile, allCopmanies)
 		}
 		return allCopmanies, dbFile, err
