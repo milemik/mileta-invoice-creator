@@ -82,7 +82,9 @@ func CreateUI(myApp fyne.App) {
 		exportButton,
 	)
 
-	myWindow.SetContent(content)
+	scrollableContent := container.NewScroll(content)
+
+	myWindow.SetContent(scrollableContent)
 	myWindow.Show()
 
 }
