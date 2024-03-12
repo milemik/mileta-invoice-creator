@@ -86,13 +86,13 @@ func createPDF(filename string, baseComp, toComp Company, pricePerHour, hoursWor
 	// PDF CREATE
 	pdf := fpdf.New("P", "mm", "A4", "")
 
-	pricePerHourInt, err := strconv.Atoi(pricePerHour)
+	pricePerHourInt, err := strconv.ParseFloat(pricePerHour, 64)
 	if err != nil {
 		log.Println(err)
 		return
 	}
 
-	hoursWorkedInt, err := strconv.Atoi(hoursWorked)
+	hoursWorkedInt, err := strconv.ParseFloat(hoursWorked, 64)
 	if err != nil {
 		log.Println(err)
 		return
@@ -107,14 +107,20 @@ func createPDF(filename string, baseComp, toComp Company, pricePerHour, hoursWor
 
 	fromToInfo(pdf, baseComp, toComp)
 	drawLine(pdf, 10, 120, 200, 120)
-	
+
 	createTable(pdf, pricePerHourInt, hoursWorkedInt)
+	drawLine(pdf, 10, 165, 200, 165)
 
 	singDoc(pdf)
 	footer(pdf)
+	if _, err := os.Stat("output/"); os.IsNotExist(err) {
+		os.Mkdir("output", 0755)
+	}
 
+	pdfPath := "output/" + filename + ".pdf"
+	log.Println("PDF PATH: " + pdfPath)
 	// Output to pdf
-	err = pdf.OutputFileAndClose(filename + ".pdf")
+	err = pdf.OutputFileAndClose(pdfPath)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -182,7 +188,7 @@ func fromToInfo(pdf *fpdf.Fpdf, baseComp, to Company) {
 	pdf.Cell(100, 110, "IBAN: "+baseComp.Bank.IBAN)
 }
 
-func createTable(pdf *fpdf.Fpdf, pricePerHour, hoursWorked int) {
+func createTable(pdf *fpdf.Fpdf, pricePerHour, hoursWorked float64) {
 	// Invoice Info
 	pdf.MoveTo(10, 70)
 	// Table Header
@@ -205,36 +211,35 @@ func createTable(pdf *fpdf.Fpdf, pricePerHour, hoursWorked int) {
 
 	pdf.Cell(cellWidth, 120, "Programerske")
 	pdf.Cell(cellWidth, 125, "Hours/Sat")
-	pdf.Cell(cellWidth, 125, strconv.Itoa(pricePerHour))
-	pdf.Cell(cellWidth, 125, strconv.Itoa(hoursWorked))
-	pdf.Cell(cellWidth, 125, strconv.Itoa(summary))
+	pdf.Cell(cellWidth, 125, fmt.Sprintf("%.0f", hoursWorked))
+	pdf.Cell(cellWidth, 125, fmt.Sprintf("%.3f", pricePerHour))
+	pdf.Cell(cellWidth, 125, fmt.Sprintf("%.2f", summary))
 
 	pdf.MoveTo(10, 86)
 	pdf.Cell(cellWidth, 120, "usluge (Programing)")
 
 	pdf.MoveTo(10, 90)
 	pdf.Cell(cellWidth*4, 130, "UKUPNO/SUM")
-	pdf.Cell(cellWidth, 130, strconv.Itoa(summary))
-
+	pdf.Cell(cellWidth, 130, fmt.Sprintf("%.2f", summary))
 }
 
 func singDoc(pdf *fpdf.Fpdf) {
 
-	pdf.MoveTo(20, 120)
+	pdf.MoveTo(20, 130)
 	pdf.Cell(100, 100, "Usluge izvršio / services performed")
 	pdf.Cell(100, 100, "Usluge primio / services received")
 
-	drawLine(pdf, 25, 185, 85, 185)
-	drawLine(pdf, 121, 185, 181, 185)
+	drawLine(pdf, 25, 195, 85, 195)
+	drawLine(pdf, 121, 195, 181, 195)
 
-	pdf.MoveTo(30, 140)
+	pdf.MoveTo(30, 150)
 	pdf.Cell(100, 100, "Ime i prezime / full name")
 	pdf.Cell(100, 100, "Ime i prezime / full name")
 
-	drawLine(pdf, 25, 205, 85, 205)
-	drawLine(pdf, 121, 205, 181, 205)
+	drawLine(pdf, 25, 215, 85, 215)
+	drawLine(pdf, 121, 215, 181, 215)
 
-	pdf.MoveTo(35, 160)
+	pdf.MoveTo(35, 170)
 	pdf.Cell(100, 100, "Potpis/ signature")
 	pdf.Cell(100, 100, "Potpis/ signature")
 
