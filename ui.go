@@ -10,7 +10,7 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-func CreateUI(myApp fyne.App) {
+func CreateUI(myApp fyne.App, baseDir string) {
 	fmt.Println("Opening UI")
 
 	myWindow := myApp.NewWindow("Invoice generator")
@@ -48,7 +48,7 @@ func CreateUI(myApp fyne.App) {
 			},
 			PIB:           companyPibInput.Text,
 			IsBaseCompany: isBaseCompanyInput.Checked,
-		})
+		}, baseDir)
 		log.Println("Added: ", idInput.Text)
 		showPopUp(myApp, "ADDED: "+companyFullNameInput.Text)
 	})

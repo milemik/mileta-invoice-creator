@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 	"strconv"
 	"time"
 
@@ -18,9 +19,10 @@ func main() {
 	myApp := app.New()
 	baseWindow := myApp.NewWindow("Invoice Creator")
 	baseWindow.Resize(fyne.NewSize(700, 1000))
+	userHomeDir := getOutputDir()
 
 	// TODO: Use binding to refresh list after adding new company!?
-	companies, _, err := GetDataFromDB()
+	companies, _, err := GetDataFromDB(userHomeDir)
 	if err != nil {
 		log.Println(err)
 		// Maybe some popup saying error reading data!?
@@ -38,7 +40,7 @@ func main() {
 	})
 
 	setupBtn := widget.NewButton("Setup", func() {
-		CreateUI(myApp)
+		CreateUI(myApp, userHomeDir)
 	})
 
 	exportBtn := widget.NewButton("Create", func() {
@@ -61,8 +63,11 @@ func main() {
 		if len(fileName) < 1 {
 			fileName = "test.pdf"
 		}
-		createPDF(fileName, baseComp, targetComp, pricePerHourInput.Text, workedHoursInput.Text)
+		createPDF(fileName, baseComp, targetComp, pricePerHourInput.Text, workedHoursInput.Text, userHomeDir)
 	})
+
+	// Location info
+	locInfo := widget.NewLabel("Invoices will be created in: " + userHomeDir)
 
 	content := container.NewVBox(
 		setupBtn,
@@ -75,6 +80,7 @@ func main() {
 		widget.NewLabel("HOURS WORKED"),
 		workedHoursInput,
 		exportBtn,
+		locInfo,
 	)
 
 	baseWindow.SetContent(content)
@@ -82,7 +88,21 @@ func main() {
 	os.Exit(1)
 }
 
-func createPDF(filename string, baseComp, toComp Company, pricePerHour, hoursWorked string) {
+func getOutputDir() string {
+
+	userHomeDir, err := os.UserHomeDir()
+	if err != nil {
+		log.Println("ERROR: ", err)
+	}
+	outputPath := filepath.Join(userHomeDir, "MInvoceCreator")
+	err = os.Mkdir(outputPath, os.ModeDir)
+	if err != nil {
+		log.Println("ERROR: ", err)
+	}
+	return outputPath
+}
+
+func createPDF(filename string, baseComp, toComp Company, pricePerHour, hoursWorked, outputDir string) {
 	// PDF CREATE
 	pdf := fpdf.New("P", "mm", "A4", "")
 
@@ -113,11 +133,8 @@ func createPDF(filename string, baseComp, toComp Company, pricePerHour, hoursWor
 
 	singDoc(pdf)
 	footer(pdf)
-	if _, err := os.Stat("output/"); os.IsNotExist(err) {
-		os.Mkdir("output", 0755)
-	}
 
-	pdfPath := "output/" + filename + ".pdf"
+	pdfPath := filepath.Join(outputDir, filename+".pdf")
 	log.Println("PDF PATH: " + pdfPath)
 	// Output to pdf
 	err = pdf.OutputFileAndClose(pdfPath)

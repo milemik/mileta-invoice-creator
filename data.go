@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
+	"strings"
 )
 
 type AllCompanies struct {
@@ -68,14 +70,16 @@ func (all *AllCompanies) TargetIdsList() []string {
 	}
 	return ids
 }
+
 // GetDataFromDB get data from database if file don't exist it will create new one
-func GetDataFromDB() (AllCompanies, string, error) {
-	dbFile := "all.json"
+func GetDataFromDB(baseDir string) (AllCompanies, string, error) {
+	dbFile := filepath.Join(baseDir, "all.json")
 	var allCopmanies AllCompanies
 	data, err := os.ReadFile(dbFile)
 	if err != nil {
-		log.Println(err)
-		if err.Error() == "open all.json: no such file or directory" {
+		log.Println("ERROR: ", err)
+		errMsg := err.Error()
+		if strings.Contains(errMsg, "all.json:") {
 			initalDBSetup(dbFile, allCopmanies)
 		}
 		return allCopmanies, dbFile, err
@@ -109,8 +113,8 @@ func writeToDb(allCopmanies AllCompanies, dbFile string) {
 	}
 }
 
-func SaveToDB(from Company) {
-	allCopmanies, mainFile, err := GetDataFromDB()
+func SaveToDB(from Company, baseDir string) {
+	allCopmanies, mainFile, err := GetDataFromDB(baseDir)
 	if err != nil {
 		log.Println(err)
 		return
