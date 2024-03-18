@@ -95,7 +95,7 @@ func getOutputDir() string {
 		log.Println("ERROR: ", err)
 	}
 	outputPath := filepath.Join(userHomeDir, "MInvoceCreator")
-	err = os.Mkdir(outputPath, os.ModeDir)
+	err = os.Mkdir(outputPath, 0755)
 	if err != nil {
 		log.Println("ERROR: ", err)
 	}
