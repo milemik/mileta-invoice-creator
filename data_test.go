@@ -159,3 +159,39 @@ func TestGetBaseCompById(t *testing.T) {
 		t.Errorf("We expect that company in result has id of 1 and we got %s", res.Id)
 	}
 }
+
+func TestDeleteCompanyFromList(t *testing.T) {
+	comp := AllCompanies{Base: []Company{
+		{Id: "11", IsBaseCompany: true},
+		{Id: "12", IsBaseCompany: true},
+	}, All: []Company{
+		{Id: "1", IsBaseCompany: false},
+		{Id: "2", IsBaseCompany: false},
+	}}
+
+	compToDelete := comp.All[0]
+	err := comp.DeleteFromList(compToDelete)
+	if err != nil {
+		t.Errorf("Got error %s", err)
+	}
+
+	if len(comp.All) != 1 {
+		t.Errorf("Expected to have one company in All and got %d", len(comp.All))
+	}
+
+	for _, c := range comp.All {
+		if c.Id == compToDelete.Id {
+			t.Errorf("Expect that company with ID %s is deleted form list", compToDelete.Id)
+		}
+	}
+	compToDelete = comp.Base[0]
+	err = comp.DeleteFromList(compToDelete)
+	if err != nil {
+		t.Errorf("Got error that we didn't expect: %s", err)
+	}
+	for _, c := range comp.Base {
+		if c.Id == compToDelete.Id {
+			t.Errorf("Expected that company with ID %s is removed", compToDelete.Id)
+		}
+	}
+}

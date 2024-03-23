@@ -71,6 +71,37 @@ func (all *AllCompanies) TargetIdsList() []string {
 	return ids
 }
 
+func (all *AllCompanies) DeleteFromList(company Company) error {
+	if company.IsBaseCompany {
+		companyIndex, err := getCompanyIndex(company, all.Base)
+		if err != nil {
+			return err
+		}
+		all.Base = append(all.Base[:companyIndex], all.Base[companyIndex+1:]...)
+	} else {
+		companyIndex, err := getCompanyIndex(company, all.All)
+		if err != nil {
+			return err
+		}
+		all.All = append(all.All[:companyIndex], all.All[companyIndex+1:]...)
+	}
+	return nil
+}
+
+func getCompanyIndex(company Company, compList []Company) (int, error) {
+	companyIndex := -1
+	for index, comp := range compList {
+		if comp == company {
+			companyIndex = index
+			break
+		}
+	}
+	if companyIndex < 0 {
+		return companyIndex, errors.New("Company doesn't exist")
+	}
+	return companyIndex, nil
+}
+
 // GetDataFromDB get data from database if file don't exist it will create new one
 func GetDataFromDB(baseDir string) (AllCompanies, string, error) {
 	dbFile := filepath.Join(baseDir, "all.json")
