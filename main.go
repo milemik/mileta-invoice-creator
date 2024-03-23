@@ -66,6 +66,26 @@ func main() {
 		createPDF(fileName, baseComp, targetComp, pricePerHourInput.Text, workedHoursInput.Text, userHomeDir)
 	})
 
+	// Select for delete
+	selectForDelete := widget.NewSelect(companies.GetAllIds(), func(s string) {
+		log.Println("Selected for delete :", s)
+	})
+
+	delCompanyBtn := widget.NewButton("Delete company", func() {
+		idToDelete := selectForDelete.Selected
+		c, err := companies.GetCompById(idToDelete)
+		if err != nil {
+			log.Printf("ERROR : %s", err)
+		}
+		log.Printf("Deleting %s", c.Id)
+		err = companies.DeleteFromList(c)
+		if err != nil {
+			log.Printf("ERROR: %s", err)
+		}
+		// Write updated data to DB
+		writeToDb(companies, GetDBLocation(userHomeDir))
+	})
+
 	// Location info
 	locInfo := widget.NewLabel("Invoices will be created in: " + userHomeDir)
 
@@ -81,6 +101,8 @@ func main() {
 		workedHoursInput,
 		exportBtn,
 		locInfo,
+		selectForDelete,
+		delCompanyBtn,
 	)
 
 	baseWindow.SetContent(content)

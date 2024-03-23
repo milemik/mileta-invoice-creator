@@ -102,9 +102,13 @@ func getCompanyIndex(company Company, compList []Company) (int, error) {
 	return companyIndex, nil
 }
 
+func GetDBLocation(baseDir string) string {
+	return filepath.Join(baseDir, "all.json")
+}
+
 // GetDataFromDB get data from database if file don't exist it will create new one
 func GetDataFromDB(baseDir string) (AllCompanies, string, error) {
-	dbFile := filepath.Join(baseDir, "all.json")
+	dbFile := GetDBLocation(baseDir)
 	var allCopmanies AllCompanies
 	data, err := os.ReadFile(dbFile)
 	if err != nil {
@@ -173,4 +177,19 @@ func (all *AllCompanies) GetBaseCompById(id string) (Company, error) {
 		}
 	}
 	return Company{}, errors.New("BASE: Could not found company with ID: " + id)
+}
+
+func (all *AllCompanies) GetCompById(id string) (Company, error) {
+	comp, err := all.GetBaseCompById(id)
+	if err != nil {
+		comp, err = all.GetTargetCompById(id)
+		if err != nil {
+			return Company{}, errors.New("Could not find company with ID: " + id)
+		}
+	}
+	return comp, nil
+}
+
+func (all *AllCompanies) GetAllIds() []string {
+	return append(all.BaseIdsList(), all.TargetIdsList()...)
 }

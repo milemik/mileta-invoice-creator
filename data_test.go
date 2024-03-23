@@ -195,3 +195,52 @@ func TestDeleteCompanyFromList(t *testing.T) {
 		}
 	}
 }
+
+func TestGetAllCompanies(t *testing.T) {
+	all := AllCompanies{
+		Base: []Company{
+			{Id: "1"},
+			{Id: "2"},
+		},
+		All: []Company{
+			{Id: "11"},
+			{Id: "12"},
+		},
+	}
+
+	allComps := all.GetAllIds()
+	if len(allComps) != 4 {
+		t.Errorf("Expect to get 4 companies and got %d", len(allComps))
+	}
+}
+
+func TestGetCompanyByIdFoo(t *testing.T) {
+	all := AllCompanies{
+		Base: []Company{
+			{Id: "1"},
+			{Id: "2"},
+		},
+		All: []Company{
+			{Id: "11"},
+			{Id: "12"},
+		},
+	}
+
+	compToGet := all.Base[1]
+	c, err := all.GetCompById(compToGet.Id)
+	if err != nil {
+		t.Error(err)
+	}
+	if c.Id != compToGet.Id {
+		t.Errorf("Got company with ID %s and expected to get company with ID %s", c.Id, compToGet.Id)
+	}
+
+	compToGet = all.All[0]
+	c, err = all.GetCompById(compToGet.Id)
+	if err != nil {
+		t.Error(err)
+	}
+	if c.Id != compToGet.Id {
+		t.Errorf("Got company with ID %s and expected to get company with ID %s", c.Id, compToGet.Id)
+	}
+}
