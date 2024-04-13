@@ -96,14 +96,6 @@ func main() {
 		createPDF(fileName, baseComp, targetComp, pricePerHourInput.Text, workedHoursInput.Text, userHomeDir)
 	})
 
-	refreshButton := widget.NewButton("Refresh", func() {
-		log.Println("Refreshing")
-		baseCompSelect.Options = getBaseCompanies()
-		targetCompSelect.Options = getTargetCompanies()
-		baseCompSelect.Refresh()
-		targetCompSelect.Refresh()
-	})
-
 	// Select for delete
 	selectForDelete := widget.NewSelect(dataGetAllIds(), func(s string) {
 		log.Println("Selected for delete :", s)
@@ -122,6 +114,16 @@ func main() {
 		}
 		// Write updated data to DB
 		writeToDb(companies, GetDBLocation(userHomeDir))
+	})
+
+	refreshButton := widget.NewButton("Refresh", func() {
+		log.Println("Refreshing")
+		baseCompSelect.Options = getBaseCompanies()
+		targetCompSelect.Options = getTargetCompanies()
+		selectForDelete.Options = dataGetAllIds()
+		baseCompSelect.Refresh()
+		targetCompSelect.Refresh()
+		selectForDelete.Refresh()
 	})
 
 	// Location info
