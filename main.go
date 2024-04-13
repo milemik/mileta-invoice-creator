@@ -15,6 +15,36 @@ import (
 	"github.com/go-pdf/fpdf"
 )
 
+func getBaseCompanies() []string {
+	userHomeDir := getOutputDir()
+	companies, _, err := GetDataFromDB(userHomeDir)
+	if err != nil {
+		log.Println(err)
+		// Maybe some popup saying error reading data!?
+	}
+	return companies.BaseIdsList()
+}
+
+func getTargetCompanies() []string {
+	userHomeDir := getOutputDir()
+	companies, _, err := GetDataFromDB(userHomeDir)
+	if err != nil {
+		log.Println(err)
+		// Maybe some popup saying error reading data!?
+	}
+	return companies.TargetIdsList()
+}
+
+func dataGetAllIds() []string {
+	userHomeDir := getOutputDir()
+	companies, _, err := GetDataFromDB(userHomeDir)
+	if err != nil {
+		log.Println(err)
+		// Maybe some popup saying error reading data!?
+	}
+	return companies.GetAllIds()
+}
+
 func main() {
 	myApp := app.New()
 	baseWindow := myApp.NewWindow("Invoice Creator")
@@ -31,11 +61,11 @@ func main() {
 	pricePerHourInput := widget.NewEntry()
 	workedHoursInput := widget.NewEntry()
 
-	baseCompSelect := widget.NewSelect(companies.BaseIdsList(), func(s string) {
+	baseCompSelect := widget.NewSelect(getBaseCompanies(), func(s string) {
 		log.Println("BASE SELECTED: " + s)
 	})
 
-	targetCompSelect := widget.NewSelect(companies.TargetIdsList(), func(s string) {
+	targetCompSelect := widget.NewSelect(getTargetCompanies(), func(s string) {
 		log.Println("TARGET SELECTED: " + s)
 	})
 
@@ -66,8 +96,16 @@ func main() {
 		createPDF(fileName, baseComp, targetComp, pricePerHourInput.Text, workedHoursInput.Text, userHomeDir)
 	})
 
+	refreshButton := widget.NewButton("Refresh", func() {
+		log.Println("Refreshing")
+		baseCompSelect.Options = getBaseCompanies()
+		targetCompSelect.Options = getTargetCompanies()
+		baseCompSelect.Refresh()
+		targetCompSelect.Refresh()
+	})
+
 	// Select for delete
-	selectForDelete := widget.NewSelect(companies.GetAllIds(), func(s string) {
+	selectForDelete := widget.NewSelect(dataGetAllIds(), func(s string) {
 		log.Println("Selected for delete :", s)
 	})
 
@@ -103,6 +141,7 @@ func main() {
 		locInfo,
 		selectForDelete,
 		delCompanyBtn,
+		refreshButton,
 	)
 
 	baseWindow.SetContent(content)
