@@ -13,3 +13,10 @@ Run app using
 ```shell
 go run .
 ```
+
+## Test
+
+Run all tests:
+```shell
+go test ./...
+```

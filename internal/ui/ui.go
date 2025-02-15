@@ -1,4 +1,4 @@
-package main
+package ui
 
 import (
 	"fmt"
@@ -8,6 +8,7 @@ import (
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
+	"github.com/milemik/pdf-vezba/internal/database"
 )
 
 func CreateUI(myApp fyne.App, baseDir string) {
@@ -34,7 +35,7 @@ func CreateUI(myApp fyne.App, baseDir string) {
 
 	exportButton := widget.NewButton("Export", func() {
 		// Here we should save this information for later usage
-		SaveToDB(Company{
+		database.SaveToDB(database.Company{
 			Id:              idInput.Text,
 			OwnerName:       ownerNameInput.Text,
 			CompanyName:     companyNameInput.Text,
@@ -42,7 +43,7 @@ func CreateUI(myApp fyne.App, baseDir string) {
 			CompanyAddress:  companyAddressInput.Text,
 			CompanyState:    companyStateInput.Text,
 			CompanyEmail:    companyEmailInput.Text,
-			Bank: BankAccount{
+			Bank: database.BankAccount{
 				SWIFT: bankSwiftNoInput.Text,
 				IBAN:  bankIbanNoInput.Text,
 			},

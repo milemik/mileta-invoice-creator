@@ -1,4 +1,4 @@
-package main
+package database
 
 import (
 	"encoding/json"
@@ -134,10 +134,10 @@ func initalDBSetup(dbFile string, allCopmanies AllCompanies) {
 		log.Println(err)
 		return
 	}
-	writeToDb(allCopmanies, dbFile)
+	WriteToDb(allCopmanies, dbFile)
 }
 
-func writeToDb(allCopmanies AllCompanies, dbFile string) {
+func WriteToDb(allCopmanies AllCompanies, dbFile string) {
 	jsonData, err := json.MarshalIndent(allCopmanies, "", " ")
 	if err != nil {
 		log.Println(err)
@@ -157,7 +157,7 @@ func SaveToDB(from Company, baseDir string) {
 
 	_ = allCopmanies.AddCompany(from)
 
-	writeToDb(allCopmanies, mainFile)
+	WriteToDb(allCopmanies, mainFile)
 	log.Println("File saved in: " + mainFile)
 }
 
