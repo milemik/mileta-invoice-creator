@@ -183,8 +183,8 @@ func createPDF(filename string, baseComp, toComp Company, pricePerHour, hoursWor
 
 	pdf.AddPage()
 	pdf.SetFont("Arial", "", 12)
-	facNum := "1/2024" // This should be from user input
-	headerSetup(pdf, facNum)
+	// facNum := "1/2024" // This should be from user input
+	headerSetup(pdf, filename)
 	drawLine(pdf, 10, 30, 200, 30)
 	// Should be read from DB/JSON?
 
