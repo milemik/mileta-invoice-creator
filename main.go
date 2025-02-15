@@ -15,6 +15,7 @@ import (
 	"github.com/go-pdf/fpdf"
 
 	"github.com/milemik/pdf-vezba/internal/database"
+	"github.com/milemik/pdf-vezba/internal/ui"
 )
 
 func getBaseCompanies() []string {
@@ -72,7 +73,7 @@ func main() {
 	})
 
 	setupBtn := widget.NewButton("Setup", func() {
-		CreateUI(myApp, userHomeDir)
+		ui.CreateUI(myApp, userHomeDir)
 	})
 
 	exportBtn := widget.NewButton("Create", func() {
