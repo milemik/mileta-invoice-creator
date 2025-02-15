@@ -13,11 +13,13 @@ import (
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
 	"github.com/go-pdf/fpdf"
+
+	"github.com/milemik/pdf-vezba/internal/database"
 )
 
 func getBaseCompanies() []string {
 	userHomeDir := getOutputDir()
-	companies, _, err := GetDataFromDB(userHomeDir)
+	companies, _, err := database.GetDataFromDB(userHomeDir)
 	if err != nil {
 		log.Println(err)
 		// Maybe some popup saying error reading data!?
@@ -27,7 +29,7 @@ func getBaseCompanies() []string {
 
 func getTargetCompanies() []string {
 	userHomeDir := getOutputDir()
-	companies, _, err := GetDataFromDB(userHomeDir)
+	companies, _, err := database.GetDataFromDB(userHomeDir)
 	if err != nil {
 		log.Println(err)
 		// Maybe some popup saying error reading data!?
@@ -37,7 +39,7 @@ func getTargetCompanies() []string {
 
 func dataGetAllIds() []string {
 	userHomeDir := getOutputDir()
-	companies, _, err := GetDataFromDB(userHomeDir)
+	companies, _, err := database.GetDataFromDB(userHomeDir)
 	if err != nil {
 		log.Println(err)
 		// Maybe some popup saying error reading data!?
@@ -52,7 +54,7 @@ func main() {
 	userHomeDir := getOutputDir()
 
 	// TODO: Use binding to refresh list after adding new company!?
-	companies, _, err := GetDataFromDB(userHomeDir)
+	companies, _, err := database.GetDataFromDB(userHomeDir)
 	if err != nil {
 		log.Println(err)
 		// Maybe some popup saying error reading data!?
@@ -113,7 +115,7 @@ func main() {
 			log.Printf("ERROR: %s", err)
 		}
 		// Write updated data to DB
-		writeToDb(companies, GetDBLocation(userHomeDir))
+		database.WriteToDb(companies, database.GetDBLocation(userHomeDir))
 	})
 
 	refreshButton := widget.NewButton("Refresh", func() {
@@ -165,7 +167,7 @@ func getOutputDir() string {
 	return outputPath
 }
 
-func createPDF(filename string, baseComp, toComp Company, pricePerHour, hoursWorked, outputDir string) {
+func createPDF(filename string, baseComp, toComp database.Company, pricePerHour, hoursWorked, outputDir string) {
 	// PDF CREATE
 	pdf := fpdf.New("P", "mm", "A4", "")
 
@@ -223,7 +225,7 @@ func headerSetup(pdf *fpdf.Fpdf, facNum string) {
 	pdf.Cell(1, 30, "Trading place / Mesto prometa: Mountain View")
 }
 
-func fromToInfo(pdf *fpdf.Fpdf, baseComp, to Company) {
+func fromToInfo(pdf *fpdf.Fpdf, baseComp, to database.Company) {
 	// FROM
 	pdf.MoveTo(10, -10)
 	pdf.Cell(100, 100, "From / Od:")
