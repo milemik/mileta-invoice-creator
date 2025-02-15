@@ -15,44 +15,15 @@ import (
 	"github.com/go-pdf/fpdf"
 
 	"github.com/milemik/pdf-vezba/internal/database"
+	"github.com/milemik/pdf-vezba/internal/helpers/db"
 	"github.com/milemik/pdf-vezba/internal/ui"
 )
-
-func getBaseCompanies() []string {
-	userHomeDir := getOutputDir()
-	companies, _, err := database.GetDataFromDB(userHomeDir)
-	if err != nil {
-		log.Println(err)
-		// Maybe some popup saying error reading data!?
-	}
-	return companies.BaseIdsList()
-}
-
-func getTargetCompanies() []string {
-	userHomeDir := getOutputDir()
-	companies, _, err := database.GetDataFromDB(userHomeDir)
-	if err != nil {
-		log.Println(err)
-		// Maybe some popup saying error reading data!?
-	}
-	return companies.TargetIdsList()
-}
-
-func dataGetAllIds() []string {
-	userHomeDir := getOutputDir()
-	companies, _, err := database.GetDataFromDB(userHomeDir)
-	if err != nil {
-		log.Println(err)
-		// Maybe some popup saying error reading data!?
-	}
-	return companies.GetAllIds()
-}
 
 func main() {
 	myApp := app.New()
 	baseWindow := myApp.NewWindow("Invoice Creator")
 	baseWindow.Resize(fyne.NewSize(700, 1000))
-	userHomeDir := getOutputDir()
+	userHomeDir := db.GetOutputDir()
 
 	// TODO: Use binding to refresh list after adding new company!?
 	companies, _, err := database.GetDataFromDB(userHomeDir)
@@ -64,11 +35,11 @@ func main() {
 	pricePerHourInput := widget.NewEntry()
 	workedHoursInput := widget.NewEntry()
 
-	baseCompSelect := widget.NewSelect(getBaseCompanies(), func(s string) {
+	baseCompSelect := widget.NewSelect(db.GetBaseCompanies(), func(s string) {
 		log.Println("BASE SELECTED: " + s)
 	})
 
-	targetCompSelect := widget.NewSelect(getTargetCompanies(), func(s string) {
+	targetCompSelect := widget.NewSelect(db.GetTargetCompanies(), func(s string) {
 		log.Println("TARGET SELECTED: " + s)
 	})
 
@@ -100,7 +71,7 @@ func main() {
 	})
 
 	// Select for delete
-	selectForDelete := widget.NewSelect(dataGetAllIds(), func(s string) {
+	selectForDelete := widget.NewSelect(db.DataGetAllIds(), func(s string) {
 		log.Println("Selected for delete :", s)
 	})
 
@@ -121,9 +92,9 @@ func main() {
 
 	refreshButton := widget.NewButton("Refresh", func() {
 		log.Println("Refreshing")
-		baseCompSelect.Options = getBaseCompanies()
-		targetCompSelect.Options = getTargetCompanies()
-		selectForDelete.Options = dataGetAllIds()
+		baseCompSelect.Options = db.GetBaseCompanies()
+		targetCompSelect.Options = db.GetTargetCompanies()
+		selectForDelete.Options = db.DataGetAllIds()
 		baseCompSelect.Refresh()
 		targetCompSelect.Refresh()
 		selectForDelete.Refresh()
@@ -152,20 +123,6 @@ func main() {
 	baseWindow.SetContent(content)
 	baseWindow.ShowAndRun()
 	os.Exit(1)
-}
-
-func getOutputDir() string {
-
-	userHomeDir, err := os.UserHomeDir()
-	if err != nil {
-		log.Println("ERROR: ", err)
-	}
-	outputPath := filepath.Join(userHomeDir, "MInvoceCreator")
-	err = os.Mkdir(outputPath, 0755)
-	if err != nil {
-		log.Println("ERROR: ", err)
-	}
-	return outputPath
 }
 
 func createPDF(filename string, baseComp, toComp database.Company, pricePerHour, hoursWorked, outputDir string) {
