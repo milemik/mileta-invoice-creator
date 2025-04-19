@@ -41,6 +41,7 @@ func CreateUI(myApp fyne.App, baseDir string) {
 			CompanyName:     companyNameInput.Text,
 			CompanyFullName: companyFullNameInput.Text,
 			CompanyAddress:  companyAddressInput.Text,
+			CompanyCity:     companySityInput.Text,
 			CompanyState:    companyStateInput.Text,
 			CompanyEmail:    companyEmailInput.Text,
 			Bank: database.BankAccount{
