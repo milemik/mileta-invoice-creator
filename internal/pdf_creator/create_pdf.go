@@ -139,7 +139,7 @@ func createTable(pdf *fpdf.Fpdf, pricePerHour, hoursWorked float64) {
 	pdf.Cell(cellWidth, 120, "Programerske")
 	pdf.Cell(cellWidth, 125, "Hours/Sat")
 	pdf.Cell(cellWidth, 125, fmt.Sprintf("%.0f", hoursWorked))
-	pdf.Cell(cellWidth, 125, fmt.Sprintf("%.3f", pricePerHour))
+	pdf.Cell(cellWidth, 125, fmt.Sprintf("%.2f", pricePerHour))
 	pdf.Cell(cellWidth, 125, fmt.Sprintf("%.2f", summary))
 
 	pdf.MoveTo(10, 86)
