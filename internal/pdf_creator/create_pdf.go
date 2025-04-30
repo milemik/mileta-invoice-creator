@@ -5,6 +5,7 @@ import (
 	"log"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/go-pdf/fpdf"
@@ -62,9 +63,10 @@ func drawLine(pdf *fpdf.Fpdf, x1, y1, x2, y2 float64) {
 }
 
 func headerSetup(pdf *fpdf.Fpdf, facNum string) {
+	facNumClean := strings.ReplaceAll(facNum, "-", "/")
 	// Header
 	now := time.Now().Format("01/02/2006")
-	pdf.Cell(100, 10, "Invoice / Faktura: "+facNum)
+	pdf.Cell(100, 10, "Invoice / Faktura: "+facNumClean)
 	pdf.Cell(-1, 10, "Dated / Datum fakture: "+now)
 	pdf.Cell(1, 20, "Value date / Datum prometa: "+now)
 	pdf.Cell(1, 30, "Trading place / Mesto prometa: Mountain View")
@@ -93,8 +95,8 @@ func fromToInfo(pdf *fpdf.Fpdf, baseComp, to database.Company) {
 
 	// Company Adress
 	pdf.MoveTo(10, 20)
-	pdf.Cell(100, 110, "Country / Država: "+baseComp.CompanyState)
-	pdf.Cell(50, 110, "Country / Država: "+to.CompanyState)
+	pdf.Cell(100, 110, "Country / Drzava: "+baseComp.CompanyState)
+	pdf.Cell(50, 110, "Country / Drzava: "+to.CompanyState)
 
 	// VAT NO
 	pdf.MoveTo(10, 30)
@@ -137,7 +139,7 @@ func createTable(pdf *fpdf.Fpdf, pricePerHour, hoursWorked float64) {
 	summary := pricePerHour * hoursWorked
 
 	pdf.Cell(cellWidth, 120, "Programerske")
-	pdf.Cell(cellWidth, 125, "Hours/Sat")
+	pdf.Cell(cellWidth, 125, "Day/Dan")
 	pdf.Cell(cellWidth, 125, fmt.Sprintf("%.0f", hoursWorked))
 	pdf.Cell(cellWidth, 125, fmt.Sprintf("%.2f", pricePerHour))
 	pdf.Cell(cellWidth, 125, fmt.Sprintf("%.2f", summary))
@@ -153,7 +155,7 @@ func createTable(pdf *fpdf.Fpdf, pricePerHour, hoursWorked float64) {
 func singDoc(pdf *fpdf.Fpdf) {
 
 	pdf.MoveTo(20, 130)
-	pdf.Cell(100, 100, "Usluge izvršio / services performed")
+	pdf.Cell(100, 100, "Usluge izvrsio / services performed")
 	pdf.Cell(100, 100, "Usluge primio / services received")
 
 	drawLine(pdf, 25, 195, 85, 195)
@@ -182,14 +184,14 @@ func footer(pdf *fpdf.Fpdf) {
 	pdf.Cell(0, 0, "Not in the VAT system / Poreski obaveznik nije u sistemu PDV-a.")
 
 	pdf.MoveTo(10, 250)
-	pdf.Cell(0, 0, "Complaints are received 10 days from receipt of invoice / Žalbe se primaju do 10 dana")
+	pdf.Cell(0, 0, "Complaints are received 10 days from receipt of invoice / Zalbe se primaju do 10 dana")
 
 	pdf.MoveTo(10, 255)
 	pdf.Cell(0, 0, "od prijema facture")
 
 	pdf.MoveTo(10, 260)
-	pdf.Cell(0, 0, "Payment within 30 days of receipt of the invoice / Valuta plaćanja je 30 dana od dana")
+	pdf.Cell(0, 0, "Payment within 30 days of receipt of the invoice / Valuta placanja je 30 dana od dana")
 
 	pdf.MoveTo(10, 265)
-	pdf.Cell(0, 0, "prijema facture.")
+	pdf.Cell(0, 0, "prijema fakture.")
 }
