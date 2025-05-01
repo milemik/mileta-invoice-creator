@@ -11,6 +11,7 @@ import (
 	"github.com/milemik/pdf-vezba/internal/database"
 )
 
+// Create companies
 func CreateUI(myApp fyne.App, baseDir string) {
 	fmt.Println("Opening UI")
 

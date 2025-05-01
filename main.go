@@ -99,6 +99,11 @@ func main() {
 	// Location info
 	locInfo := widget.NewLabel("Invoices will be created in: " + userHomeDir)
 
+	newLayoutBtn := widget.NewButton("NEW UI", func() {
+		window := ui.MainPage(myApp)
+		window.Show()
+	})
+
 	content := container.NewVBox(
 		setupBtn,
 		baseCompSelect,
@@ -114,6 +119,7 @@ func main() {
 		selectForDelete,
 		delCompanyBtn,
 		refreshButton,
+		newLayoutBtn,
 	)
 
 	baseWindow.SetContent(content)
