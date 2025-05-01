@@ -19,7 +19,8 @@ func MainPage(app fyne.App) fyne.Window {
 	welcomeText := canvas.NewText("Welcome to Invoice Creator", color.Black)
 	welcomeText.TextStyle = fyne.TextStyle{Bold: true}
 	createInvoiceBtn := widget.NewButton("Create invoice", func ()  {
-		
+		invoiceWindow := CreateInvoice(app)
+		invoiceWindow.Show()
 	})
 	addCompanyBtn := widget.NewButton("Add company", func ()  {
 		
