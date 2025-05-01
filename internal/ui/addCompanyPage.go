@@ -9,7 +9,7 @@ import (
 	"github.com/milemik/pdf-vezba/internal/helpers/db"
 )
 
-func AddCompany (app fyne.App) fyne.Window {
+func AddCompany(app fyne.App) fyne.Window {
 	window := app.NewWindow("ADD COMPANY")
 	userHomeDir := db.GetOutputDir()
 
@@ -63,7 +63,7 @@ func AddCompany (app fyne.App) fyne.Window {
 				IsBaseCompany: isBaseCompanyInput.Checked,
 			}, userHomeDir)
 			log.Println("Added: ", idInput.Text)
-			showPopUp(app, "ADDED: "+companyFullNameInput.Text)
+			ShowPopUp(app, "Copmany added", "Added: "+companyFullNameInput.Text)
 		},
 	}
 
