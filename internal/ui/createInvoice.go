@@ -61,7 +61,7 @@ func CreateInvoice(app fyne.App) fyne.Window {
 				fileName = "test.pdf"
 			}
 			pdf_creator.CreatePDF(fileName, baseComp, targetComp, pricePerHourInput.Text, workedHoursInput.Text, userHomeDir)
-		
+			ShowPopUp(app, "Success", "Invoice created successfully")
 			window.Close()
 		},
 	}
