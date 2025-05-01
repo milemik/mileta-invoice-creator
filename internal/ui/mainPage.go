@@ -26,10 +26,14 @@ func MainPage(app fyne.App) fyne.Window {
 		addCompanyWindow := AddCompany(app)
 		addCompanyWindow.Show()
 	})
+	deleteCompanyBtn := widget.NewButton("Delete company", func() {
+		deleteWindow := DeleteCompany(app)
+		deleteWindow.Show()
+	})
 
 	welcomeTextContainer := container.New(layout.NewHBoxLayout(), layout.NewSpacer(), welcomeText, layout.NewSpacer())
 
-	buttonsContainer := container.New(layout.NewHBoxLayout(), createInvoiceBtn, addCompanyBtn)
+	buttonsContainer := container.New(layout.NewHBoxLayout(), createInvoiceBtn, addCompanyBtn, deleteCompanyBtn)
 	mainContainer := container.New(layout.NewVBoxLayout(), layout.NewSpacer(), welcomeTextContainer, buttonsContainer, layout.NewSpacer())
 	window.SetContent(container.New(layout.NewCenterLayout(), mainContainer))
 
