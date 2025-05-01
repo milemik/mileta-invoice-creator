@@ -23,7 +23,8 @@ func MainPage(app fyne.App) fyne.Window {
 		invoiceWindow.Show()
 	})
 	addCompanyBtn := widget.NewButton("Add company", func ()  {
-		
+		addCompanyWindow := AddCompany(app)
+		addCompanyWindow.Show()
 	})
 
 	welcomeTextContainer := container.New(layout.NewHBoxLayout(), layout.NewSpacer(), welcomeText, layout.NewSpacer())
