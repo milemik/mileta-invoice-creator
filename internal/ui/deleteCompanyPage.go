@@ -9,7 +9,7 @@ import (
 	"github.com/milemik/pdf-vezba/internal/helpers/db"
 )
 
-func DeleteCompany (app fyne.App) fyne.Window {
+func DeleteCompany(app fyne.App) fyne.Window {
 	window := app.NewWindow("DELETE COMPANY")
 	userHomeDir := db.GetOutputDir()
 	companies, _, err := database.GetDataFromDB(userHomeDir)
@@ -40,6 +40,7 @@ func DeleteCompany (app fyne.App) fyne.Window {
 			}
 			// Write updated data to DB
 			database.WriteToDb(companies, database.GetDBLocation(userHomeDir))
+			ShowPopUp(app, "Success", "Company deleted successfully")
 			window.Close()
 		},
 	}

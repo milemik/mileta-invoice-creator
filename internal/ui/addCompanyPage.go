@@ -64,6 +64,7 @@ func AddCompany(app fyne.App) fyne.Window {
 			}, userHomeDir)
 			log.Println("Added: ", idInput.Text)
 			ShowPopUp(app, "Copmany added", "Added: "+companyFullNameInput.Text)
+			window.Close()
 		},
 	}
 
