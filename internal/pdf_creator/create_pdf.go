@@ -6,14 +6,13 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/go-pdf/fpdf"
 
 	"github.com/milemik/pdf-vezba/internal/database"
 )
 
-func CreatePDF(filename string, baseComp, toComp database.Company, pricePerHour, hoursWorked, outputDir string) {
+func CreatePDF(filename string, baseComp, toComp database.Company, pricePerHour, hoursWorked, outputDir, invoiceDate string) {
 	// PDF CREATE
 	pdf := fpdf.New("P", "mm", "A4", "")
 
@@ -32,7 +31,7 @@ func CreatePDF(filename string, baseComp, toComp database.Company, pricePerHour,
 	pdf.AddPage()
 	pdf.SetFont("Arial", "", 12)
 	// facNum := "1/2024" // This should be from user input
-	headerSetup(pdf, filename)
+	headerSetup(pdf, filename, invoiceDate)
 	drawLine(pdf, 10, 30, 200, 30)
 	// Should be read from DB/JSON?
 
@@ -62,13 +61,12 @@ func drawLine(pdf *fpdf.Fpdf, x1, y1, x2, y2 float64) {
 	pdf.Line(x1, y1, x2, y2)
 }
 
-func headerSetup(pdf *fpdf.Fpdf, facNum string) {
+func headerSetup(pdf *fpdf.Fpdf, facNum, invoiceDate string) {
 	facNumClean := strings.ReplaceAll(facNum, "-", "/")
 	// Header
-	now := time.Now().Format("01/02/2006")
 	pdf.Cell(100, 10, "Invoice / Faktura: "+facNumClean)
-	pdf.Cell(-1, 10, "Dated / Datum fakture: "+now)
-	pdf.Cell(1, 20, "Value date / Datum prometa: "+now)
+	pdf.Cell(-1, 10, "Dated / Datum fakture: "+invoiceDate)
+	pdf.Cell(1, 20, "Value date / Datum prometa: "+invoiceDate)
 	pdf.Cell(1, 30, "Trading place / Mesto prometa: Mountain View")
 }
 
